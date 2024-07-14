@@ -18,6 +18,7 @@
   
   let currentWind: Ref<Wind> = ref({
     date: new Date(),
+    max: 0,
     speed_10: 0,
     speed_80: 0,
     speed_120: 0,
@@ -76,14 +77,9 @@
 
     const weatherData = new MainData();
     await weatherData.init(coordinates.value, dateFrom, dateTo);
-    console.log("Number:", num);
-    console.log("Weather data:", weatherData.location?.weatherdata);
-    
-    currentWind.value = weatherData.location?.weatherdata?.windspeed[num];
-    currentWind.value.max = weatherData.location?.weatherdata?.maxWindspeed;            
-  }
-
-  console.log("Current wind:", currentWind.value);
+    const max = weatherData.location?.weatherdata?.maxWindspeed;    
+    currentWind.value = {...weatherData.location?.weatherdata?.windspeed[num], max: max};
+  }  
 
   console.log("Error:", error.value);
   console.log("Loading:", loading.value);
@@ -114,7 +110,7 @@
       <div v-if="error && !loading">Error fetching data</div>
       <div v-if="!loading && !error && coordinates">
         <Drones :wind="currentWind" />
-        <WeatherInfo :wind="currentWind" :date="currentDate" />
+        <WeatherInfo :wind="currentWind" />
         <WeekDaySelection
           :day="day"
           @update:day="setDay"
