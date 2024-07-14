@@ -9,10 +9,18 @@ const props = defineProps<Props>()
 const emit = defineEmits(['update:day'])
 
 const days = ['Mon', 'Tue', 'Wen', 'Thu', 'Fri', 'Sat', 'Sun']
+const daysjson = [
+    {daystring: 'Mon', daynum: 0},
+    {daystring: 'Tue', daynum: 1},
+    {daystring: 'Wen', daynum: 2},
+    {daystring: 'Thu', daynum: 3},
+    {daystring: 'Fri', daynum: 4},
+    {daystring: 'Sat', daynum: 5},
+    {daystring: 'Sun', daynum: 6}];
 
 const selectDay = async (index: number) => {
   console.log('Selected day:', index)
-  emit('update:day', days[index])
+  emit('update:day', daysjson[index])
 }
 
 </script>
@@ -21,16 +29,8 @@ const selectDay = async (index: number) => {
   <div class="week-day-selection">    
     <footer>
       <div class="week-days flex gap-4">
-        <div 
-          class="week-day" 
-          :class="{ 'selected': props.day === days[index] }"
-          v-for="(day, index) in days" 
-          :key="index"
-        >
-          <p
-            class="text-center"
-            @click="selectDay(index)"
-          >{{ day }}</p>
+        <div class="week-day" :class="{ 'selected': props.day === days[index] }" v-for="(day, index) in days" :key="index">
+          <p class="text-center" @click="selectDay(index)">{{ day }}</p>
         </div>
       </div>
     </footer>

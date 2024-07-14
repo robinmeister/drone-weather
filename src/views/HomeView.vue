@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeMount } from "vue";
+import { reactive } from "vue";
 import { MainData } from "@/assets/appdata/maindata";
 
   import WeatherInfo from "@/components/WeatherInfo.vue";
@@ -9,12 +9,15 @@ import { MainData } from "@/assets/appdata/maindata";
   import { ref, type Ref } from "vue";
   import { Skeleton } from "@/components/ui/skeleton";
 
+  let weatherdata: MainData;
+
   const loading : Ref<boolean> = ref<boolean>(false);
   const error : Ref<boolean> = ref<boolean>(false);
 
   const coordinates : Ref<{ lat: number; lon: number } | undefined> = ref(undefined);
   const today : string = new Date().toLocaleDateString("en-US", { weekday: "short" });   
-  const day : Ref<string> = ref(today); 
+  const day : Ref<string> = ref(today);
+  const dayjson: any = reactive({});
 
   const fetchData = async (day: string) => {
     loading.value = true;
@@ -24,9 +27,12 @@ import { MainData } from "@/assets/appdata/maindata";
     loading.value = false;
   };
 
-  const setCoordinates = (value: { lat: number; lon: number }) => {
+  const setCoordinates = async (value: { lat: number; lon: number }) => {
     console.log("Setting coordinates:", value);
     coordinates.value = value;
+    weatherdata = reactive(new MainData());
+    await weatherdata.init(coordinates.value);
+    console.log(weatherdata);
   };
 
   const setLoading = (value: boolean) => {
@@ -39,17 +45,17 @@ import { MainData } from "@/assets/appdata/maindata";
 
   const setDay = (value: string) => {
     day.value = value;
-    fetchData(value);
+    //fetchData(value);
   };
 
-  onBeforeMount(async () => {
-    const maindata = new MainData()
-    await maindata.init("Velbert");
-    console.log(maindata);
-  });
+  const setDayJson = (value: any) => {
+    day.value = value.daystring
+    console.log("Nummer " + value.daynum);
+    //fetchData(value);
+  };
 
-  console.log("Error:", error);
-  console.log("Loading:", loading);
+  console.log("Error:", error.value);
+  console.log("Loading:", loading.value);
 </script>
 
 <template>
@@ -77,10 +83,10 @@ import { MainData } from "@/assets/appdata/maindata";
       <div v-if="error && !loading">Error fetching data</div>
       <div v-if="!loading && !error && coordinates">
         <Drones />
-        <WeatherInfo />
+        <WeatherInfo :weather="weatherdata"/>
         <WeekDaySelection
           :day="day"
-          @update:day="setDay"
+          @update:day="setDayJson"
           @update:loading="setLoading"
           @update:error="setError"
         />

@@ -7,17 +7,14 @@ async function getLocationDataFromAPI(standort: string) : Promise<any> {
 
 function convertJsonToLocationDataArray(json: any): LocationData | undefined {
     let locationelement: LocationData | undefined = undefined;
-    if (json.length > 0) {
-        const element: any = json[0];
-        locationelement = new LocationData(element.name, element.latitude, element.longitude);
-    }
+    locationelement = new LocationData("", json.lat, json.lon);
     return locationelement;
 }
 
 
-export async function getLocationData(location: string) : Promise<LocationData | undefined> {
-    let locationData: LocationData | undefined = undefined;
-    const locationdatajson: any = await getLocationDataFromAPI(location)
-    locationData = convertJsonToLocationDataArray(locationdatajson.results);
+export async function getLocationData(coord: any) : Promise<LocationData | undefined> {
+    let locationData: LocationData | undefined;
+    //const locationdatajson: any = await getLocationDataFromAPI(location)
+    locationData = convertJsonToLocationDataArray(coord);
     return locationData;
 }

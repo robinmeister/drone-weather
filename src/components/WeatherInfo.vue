@@ -1,37 +1,29 @@
 <script setup lang="ts">
-  import { ref, type Ref } from 'vue';
+import {type Ref, ref, watch} from "vue";
+  import { MainData } from "@/assets/appdata/maindata";
 
-  const weather = ref({
-    temperature: 0,
-    description: '',
-    icon: '',
-    wind: 0,    
-  })
-
-  const fetchWeather = async (lat: number, lon: number) => {
-    console.log('Fetching weather for:', lat, lon)
-    // fetch weather data
-    weather.value = {
-      temperature: 25,
-      description: 'Sunny',
-      icon: 'sun',
-      wind: 10,
+  defineProps({
+    weather: {
+      type: MainData,
+      required: true
     }
-  }
+  });
 
-  fetchWeather(0, 0)
+  const currentTime: Date = new Date();
+  const num: number = currentTime.getHours();
+
 </script>
 
 <template>
   <div class="weather-info">
     <div class="weather-info-card">
       <div class="weather-info-icon">
-        <img :src="'../assets/' + weather.icon + '.png'" :alt="weather.description" />
+        <!--<img :src="'../assets/'  + '.png'" :alt="weather.description" />-->
       </div>
       <div class="weather-info-details">
-        <p class="wind">Wind: {{ weather.wind }} km/h</p>
-        <p class="temperature">{{ weather.temperature }}°C</p>
-        <p class="description">{{ weather.description }}</p>        
+        <p class="wind">Wind: {{ weather.location?.weatherdata?.windspeed[num].speed_10  }} km/h</p>
+        <p class="temperature">{{  }}°C</p>
+        <p class="description">{{  }}</p>
       </div>
     </div>
   </div>

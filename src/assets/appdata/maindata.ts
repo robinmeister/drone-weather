@@ -9,9 +9,9 @@ export class MainData {
     date_today: Date = new Date();
     date_string: string = this.date_today.toISOString().split("T")[0];
 
-    async init(city: string) {
+    async init(coord: any) {
         try {
-            this.location = await getLocationData(city);
+            this.location = await getLocationData(coord);
             await this.location!!.receiveWeatherData(this.date_string, this.date_string);
         } catch (e) {
             console.log(e);
