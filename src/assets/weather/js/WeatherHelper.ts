@@ -63,6 +63,6 @@ function convertJsonToWeatherarray(json: any) : WeatherData | undefined {
 }
 
 async function getWeatherDataAsJson(lat: number, long: number, start_date: string, end_date: string): Promise<any> {
-    const response = await fetch("https://api.open-meteo.com/v1/forecast?latitude=" + lat.toString() + "&longitude=" + long.toString() + "&current=rain,showers,snowfall,wind_speed_10m,wind_direction_10m,wind_gusts_10m&hourly=wind_speed_10m,wind_speed_80m,wind_speed_120m,wind_speed_180m&daily=temperature_2m_max,temperature_2m_min,wind_speed_10m_max,wind_direction_10m_dominant&timezone=Europe%2FBerlin&start_date=2024-07-14&end_date=2024-07-14")
+    const response = await fetch("https://api.open-meteo.com/v1/forecast?latitude=" + lat.toString() + "&longitude=" + long.toString() + "&current=rain,showers,snowfall,wind_speed_10m,wind_direction_10m,wind_gusts_10m&hourly=wind_speed_10m,wind_speed_80m,wind_speed_120m,wind_speed_180m&daily=temperature_2m_max,temperature_2m_min,wind_speed_10m_max,wind_direction_10m_dominant&timezone=Europe%2FBerlin&start_date=" + start_date + "&end_date=" + end_date);
     return await response.json();
 }

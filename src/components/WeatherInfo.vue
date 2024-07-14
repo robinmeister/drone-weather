@@ -1,37 +1,44 @@
 <script setup lang="ts">
-  import { ref, type Ref } from 'vue';
+import {type Ref, ref, watch} from "vue";
 
-  const weather = ref({
-    temperature: 0,
-    description: '',
-    icon: '',
-    wind: 0,    
-  })
-
-  const fetchWeather = async (lat: number, lon: number) => {
-    console.log('Fetching weather for:', lat, lon)
-    // fetch weather data
-    weather.value = {
-      temperature: 25,
-      description: 'Sunny',
-      icon: 'sun',
-      wind: 10,
+  const props = defineProps({
+    wind: {
+      type: Number,
+      required: true
+    },
+    date: {
+      type: String,
+      required: true
     }
-  }
+  });
 
-  fetchWeather(0, 0)
+  let currentwind: Ref<number> = ref(props.wind);
+  let currentdate: Ref<string> = ref(props.date);
+
+  watch(() => props.wind, (newwind, oldwind) => {
+      if (newwind !== oldwind) {
+        currentwind.value = newwind;
+      }
+  });
+
+  watch(() => props.date, (newdate, olddate) => {
+    if (newdate !== olddate) {
+      currentdate.value = newdate;
+    }
+  });
 </script>
 
 <template>
   <div class="weather-info">
     <div class="weather-info-card">
       <div class="weather-info-icon">
-        <img :src="'../assets/' + weather.icon + '.png'" :alt="weather.description" />
+        <!--<img :src="'../assets/'  + '.png'" :alt="weather.description" />-->
       </div>
       <div class="weather-info-details">
-        <p class="wind">Wind: {{ weather.wind }} km/h</p>
-        <p class="temperature">{{ weather.temperature }}°C</p>
-        <p class="description">{{ weather.description }}</p>        
+        <p> {{ currentdate }} </p>
+        <p class="wind">Wind: {{ currentwind  }} km/h</p>
+        <p class="temperature">{{  }}°C</p>
+        <p class="description">{{  }}</p>
       </div>
     </div>
   </div>
