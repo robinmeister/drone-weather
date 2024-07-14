@@ -1,17 +1,31 @@
 <script setup lang="ts">
 import {type Ref, ref, watch} from "vue";
-  import { MainData } from "@/assets/appdata/maindata";
 
-  defineProps({
-    weather: {
-      type: MainData,
+  const props = defineProps({
+    wind: {
+      type: Number,
+      required: true
+    },
+    date: {
+      type: String,
       required: true
     }
   });
 
-  const currentTime: Date = new Date();
-  const num: number = currentTime.getHours();
+  let currentwind: Ref<number> = ref(props.wind);
+  let currentdate: Ref<string> = ref(props.date);
 
+  watch(() => props.wind, (newwind, oldwind) => {
+      if (newwind !== oldwind) {
+        currentwind.value = newwind;
+      }
+  });
+
+  watch(() => props.date, (newdate, olddate) => {
+    if (newdate !== olddate) {
+      currentdate.value = newdate;
+    }
+  });
 </script>
 
 <template>
@@ -21,7 +35,8 @@ import {type Ref, ref, watch} from "vue";
         <!--<img :src="'../assets/'  + '.png'" :alt="weather.description" />-->
       </div>
       <div class="weather-info-details">
-        <p class="wind">Wind: {{ weather.location?.weatherdata?.windspeed[num].speed_10  }} km/h</p>
+        <p> {{ currentdate }} </p>
+        <p class="wind">Wind: {{ currentwind  }} km/h</p>
         <p class="temperature">{{  }}°C</p>
         <p class="description">{{  }}</p>
       </div>

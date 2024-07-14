@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { reactive } from "vue";
-import { MainData } from "@/assets/appdata/maindata";
-
+  import { MainData } from "@/assets/appdata/maindata";
   import WeatherInfo from "@/components/WeatherInfo.vue";
   import Drones from "@/components/Drones.vue";
   import WeekDaySelection from "@/components/WeekDaySelection.vue";
@@ -9,7 +7,8 @@ import { MainData } from "@/assets/appdata/maindata";
   import { ref, type Ref } from "vue";
   import { Skeleton } from "@/components/ui/skeleton";
 
-  let weatherdata: MainData;
+  let currentDate: Ref<string> = ref('');
+  let currentWind: Ref<number> = ref(0);
 
   const loading : Ref<boolean> = ref<boolean>(false);
   const error : Ref<boolean> = ref<boolean>(false);
@@ -17,22 +16,20 @@ import { MainData } from "@/assets/appdata/maindata";
   const coordinates : Ref<{ lat: number; lon: number } | undefined> = ref(undefined);
   const today : string = new Date().toLocaleDateString("en-US", { weekday: "short" });   
   const day : Ref<string> = ref(today);
-  const dayjson: any = reactive({});
+  const index: Ref<number> = ref(0); //index von den Wochentagen die geklickt wurden (Dienstag 1, Mittwoch 2, Donnertsg 3 usw.)
 
   const fetchData = async (day: string) => {
     loading.value = true;
     error.value = false;
     console.log("Fetching data for coordinates:", coordinates.value, "and day:", day);
-    // fetch data
+    await fetchWeatherData(index.value);
     loading.value = false;
   };
 
   const setCoordinates = async (value: { lat: number; lon: number }) => {
     console.log("Setting coordinates:", value);
     coordinates.value = value;
-    weatherdata = reactive(new MainData());
-    await weatherdata.init(coordinates.value);
-    console.log(weatherdata);
+    await fetchWeatherData(0);
   };
 
   const setLoading = (value: boolean) => {
@@ -43,16 +40,31 @@ import { MainData } from "@/assets/appdata/maindata";
     error.value = value;
   };
 
-  const setDay = (value: string) => {
-    day.value = value;
-    //fetchData(value);
+  const setDay = (value: any) => {
+    day.value = value.day;
+    index.value = (value.index + 1);
+    fetchData(value);
   };
 
-  const setDayJson = (value: any) => {
-    day.value = value.daystring
-    console.log("Nummer " + value.daynum);
-    //fetchData(value);
-  };
+  //momentan nur für windspeed_10 → muss noch auf 80, 120 und 180 erweitert werden
+  async function fetchWeatherData(indexday: number) {
+    const currentTime: Date = new Date();
+    const num: number = currentTime.getHours();
+
+    if (indexday !== 0) {
+      currentTime.setDate(currentTime.getDate() + indexday);
+    }
+
+    const datefrom: string = currentTime.toISOString().split("T")[0];
+    const dateto: string = currentTime.toISOString().split("T")[0];
+
+    currentDate.value = datefrom;
+
+    const weatherdata = new MainData();
+    await weatherdata.init(coordinates.value, datefrom, dateto);
+    currentWind.value = weatherdata.location?.weatherdata?.windspeed[num].speed_10!!;
+    console.log(currentWind.value);
+  }
 
   console.log("Error:", error.value);
   console.log("Loading:", loading.value);
@@ -83,10 +95,10 @@ import { MainData } from "@/assets/appdata/maindata";
       <div v-if="error && !loading">Error fetching data</div>
       <div v-if="!loading && !error && coordinates">
         <Drones />
-        <WeatherInfo :weather="weatherdata"/>
+        <WeatherInfo :wind="currentWind" :date="currentDate" />
         <WeekDaySelection
           :day="day"
-          @update:day="setDayJson"
+          @update:day="setDay"
           @update:loading="setLoading"
           @update:error="setError"
         />
