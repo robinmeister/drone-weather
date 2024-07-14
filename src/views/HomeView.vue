@@ -7,8 +7,22 @@
   import { ref, type Ref } from "vue";
   import { Skeleton } from "@/components/ui/skeleton";
 
-  let currentDate: Ref<string> = ref('');
-  let currentWind: Ref<number> = ref(0);
+  export type Wind = {
+    date: Date
+    max: number
+    speed_10: number
+    speed_80: number
+    speed_120: number
+    speed_180: number
+  }
+  
+  let currentWind: Ref<Wind> = ref({
+    date: new Date(),
+    speed_10: 0,
+    speed_80: 0,
+    speed_120: 0,
+    speed_180: 0
+  });
 
   const loading : Ref<boolean> = ref<boolean>(false);
   const error : Ref<boolean> = ref<boolean>(false);
@@ -47,24 +61,29 @@
   };
 
   //momentan nur für windspeed_10 → muss noch auf 80, 120 und 180 erweitert werden
-  async function fetchWeatherData(indexday: number) {
+  async function fetchWeatherData(indexDay: number) {
     const currentTime: Date = new Date();
     const num: number = currentTime.getHours();
 
-    if (indexday !== 0) {
-      currentTime.setDate(currentTime.getDate() + indexday);
+    if (indexDay !== 0) {
+      currentTime.setDate(currentTime.getDate() + indexDay);
     }
 
-    const datefrom: string = currentTime.toISOString().split("T")[0];
-    const dateto: string = currentTime.toISOString().split("T")[0];
+    const dateFrom: string = currentTime.toISOString().split("T")[0];
+    const dateTo: string = currentTime.toISOString().split("T")[0];
 
-    currentDate.value = datefrom;
+    currentWind.value.date = dateFrom;
 
-    const weatherdata = new MainData();
-    await weatherdata.init(coordinates.value, datefrom, dateto);
-    currentWind.value = weatherdata.location?.weatherdata?.windspeed[num].speed_10!!;
-    console.log(currentWind.value);
+    const weatherData = new MainData();
+    await weatherData.init(coordinates.value, dateFrom, dateTo);
+    console.log("Number:", num);
+    console.log("Weather data:", weatherData.location?.weatherdata);
+    
+    currentWind.value = weatherData.location?.weatherdata?.windspeed[num];
+    currentWind.value.max = weatherData.location?.weatherdata?.maxWindspeed;            
   }
+
+  console.log("Current wind:", currentWind.value);
 
   console.log("Error:", error.value);
   console.log("Loading:", loading.value);
@@ -72,9 +91,9 @@
 
 <template>
   <div class="weather-app">
-    <header class="header">
+    <!-- <header class="header">
       <h1>Drone - Weather</h1>
-    </header>
+    </header> -->
     <main class="container mx-auto p-4">
       <LocationInput 
         v-model="coordinates" 
@@ -94,7 +113,7 @@
       </div>
       <div v-if="error && !loading">Error fetching data</div>
       <div v-if="!loading && !error && coordinates">
-        <Drones />
+        <Drones :wind="currentWind" />
         <WeatherInfo :wind="currentWind" :date="currentDate" />
         <WeekDaySelection
           :day="day"

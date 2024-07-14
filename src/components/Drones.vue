@@ -3,7 +3,6 @@
     Card,    
   } from '@/components/ui/card'
   import { ref, type Ref } from 'vue';
-  import { MainData } from "@/assets/appdata/maindata";
   import DroneCarousel from '@/components/DroneCarousel.vue'
   import dji_fpv from '@/assets/images/dji_fpv.jpg'
   import dji_mini_4_pro from '@/assets/images/dji_mini_4_pro.png'
@@ -18,29 +17,10 @@
     maxWindResistance: number
     image: string
   }
-
-  /* type Weather = {
-    date: Date
-    maxTemp: number
-    maxWindSpeed: number
-    minTemp: number
-    minWindSpeed: number
-    rain: boolean
-    snow: boolean
-    windspeed: WindSpeed[]
-  }
-
-  type WindSpeed = {
-    date: Date
-    speed_10: number
-    speed_80: number
-    speed_120: number
-    speed_180: number
-  }
- */
+  
   interface Props {
-    weather: {
-      type: MainData,
+    wind: {
+      type: Wind,
       required: true
     }
   }  
@@ -86,14 +66,12 @@
       }
     ]     
 
-  const filterRecDrones = (weather: MainData) => {
-    console.log('Filtering drones for weather:', weather)
-    const maxWindSpeed = weather.location?.weatherdata?.maxWindspeed
-    console.log('Max wind speed:', maxWindSpeed)
-    return drones.filter(drone => drone.maxWindResistance >= maxWindSpeed)
+  const filterRecDrones = (wind: number) => {
+    console.log('Filtering drones with wind:', wind)  
+    return drones.filter(drone => drone.maxWindResistance >= wind.max)
   }
 
-  const recommended_drones = ref(filterRecDrones(props.weather))
+  const recommended_drones = ref(filterRecDrones(props.wind))
   
   const selectedDrone : Ref<number> = ref(0)  
 
@@ -102,18 +80,22 @@
     selectedDrone.value = index
   }
 
-  console.log("Weather Data: ", props.weather.location?.weatherdata)
-  console.log('Selected drone:', selectedDrone)
-
 </script>
 
 <template>   
-  <div class="drones">      
+  <div class="drones-container">          
+    <p><b>Recommended drones:</b></p>
+  </div>  
+  <div class="drones">          
     <DroneCarousel :drones="recommended_drones" :selectedDrone="selectedDrone" @selectDrone="selectDrone" />
   </div>
 </template>  
 
 <style scoped>
+  .drones-container {
+    display: flex;
+    justify-content: center;    
+  }
   .drones {
     display: flex;
     justify-content: center;
