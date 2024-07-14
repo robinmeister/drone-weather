@@ -9,18 +9,10 @@ const props = defineProps<Props>()
 const emit = defineEmits(['update:day', 'update:loading', 'update:error'])
 
 const days = ['Mon', 'Tue', 'Wen', 'Thu', 'Fri', 'Sat', 'Sun']
-const daysjson = [
-    {daystring: 'Mon', daynum: 0},
-    {daystring: 'Tue', daynum: 1},
-    {daystring: 'Wen', daynum: 2},
-    {daystring: 'Thu', daynum: 3},
-    {daystring: 'Fri', daynum: 4},
-    {daystring: 'Sat', daynum: 5},
-    {daystring: 'Sun', daynum: 6}];
 
 const selectDay = async (index: number) => {
   console.log('Selected day:', index)
-  emit('update:day', daysjson[index])
+  emit('update:day', {day: days[index], index: index})
 }
 
 </script>
