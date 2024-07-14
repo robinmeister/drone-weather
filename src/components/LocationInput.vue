@@ -54,10 +54,12 @@ const searchLocation = async (event: MouseEvent) => {
     </div>
     <div class="flex w-full max-w-sm items-center gap-1.5">      
       <Input v-model="location" placeholder="Enter a location" />
-      <Button @click="searchLocation">Search</Button>      
-    </div>
-    <div class="selected-location flex gap-1.5">
-      <p v-if="correctLocation">{{ location }}</p>
+      <Button 
+        class="search-button"
+        @click="searchLocation"        
+      >
+        <img src="../assets/icons/search.svg" alt="Search" />
+      </Button>      
     </div>
   </div>
 </template>
@@ -80,5 +82,9 @@ const searchLocation = async (event: MouseEvent) => {
     margin-bottom: 20px;
     align-items: center;
     text-decoration: underline;    
+  }
+
+  .search-button {
+    background-color: #3498db;
   }
 </style>

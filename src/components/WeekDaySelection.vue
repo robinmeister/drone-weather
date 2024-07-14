@@ -6,7 +6,7 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-const emit = defineEmits(['update:day'])
+const emit = defineEmits(['update:day', 'update:loading', 'update:error'])
 
 const days = ['Mon', 'Tue', 'Wen', 'Thu', 'Fri', 'Sat', 'Sun']
 const daysjson = [
@@ -29,8 +29,10 @@ const selectDay = async (index: number) => {
   <div class="week-day-selection">    
     <footer>
       <div class="week-days flex gap-4">
-        <div class="week-day" :class="{ 'selected': props.day === days[index] }" v-for="(day, index) in days" :key="index">
-          <p class="text-center" @click="selectDay(index)">{{ day }}</p>
+        <div class="week-days flex gap-1">
+          <div class="week-day" :class="{ 'selected': props.day === days[index] }" v-for="(day, index) in days" :key="index">
+            <p class="text-center" @click="selectDay(index)">{{ day }}</p>
+          </div>
         </div>
       </div>
     </footer>
@@ -39,8 +41,8 @@ const selectDay = async (index: number) => {
 
 <style scoped>
   .week-day-selection {
-    margin-top: 2rem;
-    padding: 1rem;    
+    margin-top: 8rem;
+
   }
 
   .week-days {
@@ -48,7 +50,7 @@ const selectDay = async (index: number) => {
   }
 
   .week-day {
-    padding: 0.3rem;
+    padding: 0.6rem;
     border-radius: 0.5rem;
     height: auto;
     width: auto;
