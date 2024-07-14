@@ -7,14 +7,15 @@
   import { ref, type Ref } from "vue";
   import { Skeleton } from "@/components/ui/skeleton";
 
-  let currentDate: Ref<string> = ref('');
+  const d = new Date();
+  let currentDate: Ref<string> = ref(d.toLocaleDateString() + " " + d.toLocaleTimeString());
   let currentWind: Ref<number> = ref(0);
 
   const loading : Ref<boolean> = ref<boolean>(false);
   const error : Ref<boolean> = ref<boolean>(false);
 
   const coordinates : Ref<{ lat: number; lon: number } | undefined> = ref(undefined);
-  const today : string = new Date().toLocaleDateString("en-US", { weekday: "short" });   
+  const today : string = new Date().toLocaleDateString("en-US", { weekday: "short" });
   const day : Ref<string> = ref(today);
   const index: Ref<number> = ref(0); //index von den Wochentagen die geklickt wurden (Dienstag 1, Mittwoch 2, Donnertsg 3 usw.)
 
@@ -42,7 +43,13 @@
 
   const setDay = (value: any) => {
     day.value = value.day;
-    index.value = (value.index + 1);
+
+    if (day.value !== today) {
+      index.value = value.index + 1;
+    } else {
+      index.value = 0;
+    }
+
     fetchData(value);
   };
 
@@ -58,7 +65,7 @@
     const datefrom: string = currentTime.toISOString().split("T")[0];
     const dateto: string = currentTime.toISOString().split("T")[0];
 
-    currentDate.value = datefrom;
+    currentDate.value = currentTime.toLocaleDateString() + " " + currentTime.toLocaleTimeString();
 
     const weatherdata = new MainData();
     await weatherdata.init(coordinates.value, datefrom, dateto);

@@ -35,7 +35,7 @@ import {type Ref, ref, watch} from "vue";
         <!--<img :src="'../assets/'  + '.png'" :alt="weather.description" />-->
       </div>
       <div class="weather-info-details">
-        <p> {{ currentdate }} </p>
+        <p class="w-full text-center text-black font-light text-xs"> {{ currentdate }} </p>
         <p class="wind">Wind: {{ currentwind  }} km/h</p>
         <p class="temperature">{{  }}°C</p>
         <p class="description">{{  }}</p>
