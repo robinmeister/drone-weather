@@ -4,18 +4,36 @@
   import Drones from "@/components/Drones.vue";
   import WeekDaySelection from "@/components/WeekDaySelection.vue";
   import LocationInput from "@/components/LocationInput.vue";
-  import { ref, type Ref } from "vue";
+  import {onMounted, reactive, ref, type Ref} from "vue";
   import { Skeleton } from "@/components/ui/skeleton";
 
-  const d = new Date();
-  let currentDate: Ref<string> = ref(d.toLocaleDateString() + " " + d.toLocaleTimeString());
-  let currentWind: Ref<number> = ref(0);
+  export type Wind = {
+    date: Date
+    max: number
+    speed_10: number
+    speed_80: number
+    speed_120: number
+    speed_180: number
+  }
+
+  let currentWind: Wind = reactive<Wind>({
+    date: new Date(),
+    max: 0,
+    speed_10: 0,
+    speed_80: 0,
+    speed_120: 0,
+    speed_180: 0
+  });
+
 
   const loading : Ref<boolean> = ref<boolean>(false);
   const error : Ref<boolean> = ref<boolean>(false);
 
+  let loadData: Ref<Boolean> = ref(false);
+
+  let inputdata: Ref<string> = ref("");
   const coordinates : Ref<{ lat: number; lon: number } | undefined> = ref(undefined);
-  const today : string = new Date().toLocaleDateString("en-US", { weekday: "short" });
+  const today : string = new Date().toLocaleDateString("en-US", { weekday: "short" });   
   const day : Ref<string> = ref(today);
   const index: Ref<number> = ref(0); //index von den Wochentagen die geklickt wurden (Dienstag 1, Mittwoch 2, Donnertsg 3 usw.)
 
@@ -25,12 +43,13 @@
     console.log("Fetching data for coordinates:", coordinates.value, "and day:", day);
     await fetchWeatherData(index.value);
     loading.value = false;
+    loadData.value = true;
   };
 
   const setCoordinates = async (value: { lat: number; lon: number }) => {
     console.log("Setting coordinates:", value);
     coordinates.value = value;
-    await fetchWeatherData(0);
+    await fetchData(today);
   };
 
   const setLoading = (value: boolean) => {
@@ -54,24 +73,34 @@
   };
 
   //momentan nur für windspeed_10 → muss noch auf 80, 120 und 180 erweitert werden
-  async function fetchWeatherData(indexday: number) {
+  async function fetchWeatherData(indexDay: number) {
     const currentTime: Date = new Date();
     const num: number = currentTime.getHours();
 
-    if (indexday !== 0) {
-      currentTime.setDate(currentTime.getDate() + indexday);
+    if (indexDay !== 0) {
+      currentTime.setDate(currentTime.getDate() + indexDay);
     }
 
-    const datefrom: string = currentTime.toISOString().split("T")[0];
-    const dateto: string = currentTime.toISOString().split("T")[0];
+    const dateFrom: string = currentTime.toISOString().split("T")[0];
+    const dateTo: string = currentTime.toISOString().split("T")[0];
 
-    currentDate.value = currentTime.toLocaleDateString() + " " + currentTime.toLocaleTimeString();
+    currentWind.date = new Date(dateFrom);
 
-    const weatherdata = new MainData();
-    await weatherdata.init(coordinates.value, datefrom, dateto);
-    currentWind.value = weatherdata.location?.weatherdata?.windspeed[num].speed_10!!;
-    console.log(currentWind.value);
+    const weatherData = new MainData();
+    await weatherData.init(coordinates.value, inputdata.value, dateFrom, dateTo);
+    console.log("Number:", num);
+    console.log("Weather data:", weatherData.location?.weatherdata);
+
+    currentWind = weatherData.location?.weatherdata?.windspeed[num]!!;
+    currentWind.max = weatherData.location?.weatherdata?.maxWindspeed!!;
   }
+
+  async function handleEnter(value: string) {
+    inputdata.value = value;
+    await fetchData(today);
+  }
+
+  console.log("Current wind:", currentWind);
 
   console.log("Error:", error.value);
   console.log("Loading:", loading.value);
@@ -79,13 +108,14 @@
 
 <template>
   <div class="weather-app">
-    <header class="header">
+    <!-- <header class="header">
       <h1>Drone - Weather</h1>
-    </header>
+    </header> -->
     <main class="container mx-auto p-4">
       <LocationInput 
-        v-model="coordinates" 
-        @search="fetchData" 
+        v-model="coordinates"
+        @search="fetchData"
+        @key:enter="handleEnter"
         @update:coordinates="setCoordinates"
         @update:error="setError"
         @update:loading="setLoading"
@@ -100,9 +130,9 @@
         </div>
       </div>
       <div v-if="error && !loading">Error fetching data</div>
-      <div v-if="!loading && !error && coordinates">
-        <Drones />
-        <WeatherInfo :wind="currentWind" :date="currentDate" />
+      <div v-if="!loading && !error && loadData">
+        <Drones :wind="currentWind" />
+        <WeatherInfo :wind="currentWind" />
         <WeekDaySelection
           :day="day"
           @update:day="setDay"

@@ -33,7 +33,7 @@ const selectDay = async (index: number) => {
 
 <style scoped>
   .week-day-selection {
-    margin-top: 8rem;
+    margin-top: 1rem;
 
   }
 

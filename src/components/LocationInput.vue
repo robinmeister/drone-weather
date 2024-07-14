@@ -5,7 +5,7 @@ import { ref, type Ref } from 'vue';
 import { AlertCircle } from 'lucide-vue-next'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 
-const emit = defineEmits(['update:loading', 'update:error', 'update:coordinates'])
+const emit = defineEmits(['update:loading', 'update:error', 'update:coordinates', 'key:enter'])
 
 const location = ref('')
 const correctLocation : Ref<boolean | undefined> = ref(undefined)
@@ -53,7 +53,7 @@ const searchLocation = async (event: MouseEvent) => {
       </Alert>
     </div>
     <div class="flex w-full max-w-sm items-center gap-1.5">      
-      <Input v-model="location" placeholder="Enter a location" />
+      <Input v-model="location" placeholder="Enter a location" @keydown.enter="emit('key:enter', location)" />
       <Button 
         class="search-button"
         @click="searchLocation"        

@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { watchOnce } from '@vueuse/core'
 import { Carousel, type CarouselApi, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'
 import { Card, CardContent } from '@/components/ui/card'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 
 interface Props {
   drones: { id: number, name: string, maxWindResistance: number, image: string }[]
@@ -42,6 +43,17 @@ watchOnce(emblaMainApi, (emblaMainApi) => {
 
 <template>
   <div class="drone-carousel">
+    <div
+      v-if="drones.length === 0"      
+    >
+      <Alert variant="default">
+        <!--<AlertCircle class="w-4 h-4" />-->
+        <AlertTitle>No drones recommended</AlertTitle>
+        <AlertDescription>
+          There are no drones recommended for the current weather conditions.
+        </AlertDescription>
+      </Alert>
+    </div>
     <div class="w-full sm:w-auto">
       <Carousel
         class="relative w-full max-w-xs"

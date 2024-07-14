@@ -1,5 +1,6 @@
 export class WindSpeed {
     date: Date = new Date();
+    max: number = 0;
     speed_10: number = 0;
     speed_80: number = 0;
     speed_120: number = 0;
