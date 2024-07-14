@@ -32,7 +32,7 @@ import { MainData } from "@/assets/appdata/maindata";
     coordinates.value = value;
     weatherdata = reactive(new MainData());
     await weatherdata.init(coordinates.value);
-    console.log(weatherdata);
+    console.log("Weather Data: ", weatherdata);
   };
 
   const setLoading = (value: boolean) => {
@@ -82,7 +82,7 @@ import { MainData } from "@/assets/appdata/maindata";
       </div>
       <div v-if="error && !loading">Error fetching data</div>
       <div v-if="!loading && !error && coordinates">
-        <Drones />
+        <Drones :weather="weatherdata" />
         <WeatherInfo :weather="weatherdata"/>
         <WeekDaySelection
           :day="day"
