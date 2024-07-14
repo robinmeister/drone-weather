@@ -1,9 +1,16 @@
 <script setup lang="ts">
-import { Button } from '@/components/ui/button'
+import { onBeforeMount } from "vue";
+import {MainData} from "@/assets/appdata/maindata";
+
+onBeforeMount(async () => {
+  const maindata = new MainData()
+  await maindata.init("Velbert");
+  console.log(maindata);
+});
 </script>
 
 <template>
   <div>
-    <Button>Click me</Button>
+
   </div>
 </template>
