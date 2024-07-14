@@ -3,27 +3,49 @@
     Card,    
   } from '@/components/ui/card'
   import { ref, type Ref } from 'vue';
+  import DroneCarousel from '@/components/DroneCarousel.vue'
+  import dji_fpv from '@/assets/images/dji_fpv.jpg'
+  import dji_mini_4_pro from '@/assets/images/dji_mini_4_pro.png'
+  import dji_mavic_mini from '@/assets/images/dji_mavic_mini.jpg'
 
   const drones = ref([
-    {
-      id: 1,
-      name: 'Drone 1',
-      description: 'This is the first drone',
-      image: '../assets/drone.png',
-    },
-    {
-      id: 2,
-      name: 'Drone 2',
-      description: 'This is the second drone',
-      image: '../assets/drone.png',
-    },
-    {
-      id: 3,
-      name: 'Drone 3',
-      description: 'This is the third drone',
-      image: '../assets/drone.png',
-    }
-  ]);
+      {
+        id: 1,
+        name: 'DJI Mavic Mini',
+        maxWindResistance: 28,
+        image: dji_mavic_mini,
+      },
+      {
+        id: 2,
+        name: 'DJI Mini 4 Pro',
+        maxWindResistance: 38,
+        image: dji_mini_4_pro,
+      },
+      {
+        id: 3,
+        name: 'DJI FPV',
+        maxWindResistance: 49,
+        image: dji_fpv,
+      },
+      {
+        id: 4,
+        name: 'DJI FPV',
+        maxWindResistance: 49,
+        image: dji_fpv,
+      },
+      {
+        id: 5,
+        name: 'DJI FPV',
+        maxWindResistance: 49,
+        image: dji_fpv,
+      },
+      {
+        id: 6,
+        name: 'DJI FPV',
+        maxWindResistance: 49,
+        image: dji_fpv,
+      }
+    ]);
   
   const selectedDrone : Ref<number> = ref(0)
 
@@ -37,51 +59,15 @@
 </script>
 
 <template>   
-  <div class="drones flex flex-wrap gap-4">
-    <div class="selected-drone">
-      <Card v-if="selectedDrone !== undefined" class="selected-drone-card">
-        <img src="../assets/drone.png" alt="Drone" class="img" />
-      </Card>
-    </div>  
-    <div class="drones flex flex-wrap gap-4">
-      <Card
-        v-for="(drone, index) in drones"
-        :key="index"
-        class="drone"
-        :class="{ 'selected': selectedDrone === index }"
-        @click="selectDrone(index)"
-      >
-        <img src="../assets/drone.png" alt="Drone" class="img" />
-      </Card>
-    </div>
+  <div class="drones">      
+    <DroneCarousel :drones="drones" :selectedDrone="selectedDrone" @selectDrone="selectDrone" />
   </div>
 </template>  
 
 <style scoped>
-
   .drones {
+    display: flex;
     justify-content: center;
-  }
-
-  .drone {
-    cursor: pointer;
-    max-width: 80px;
-    max-height: 80px;
-  }
-
-  .drone.selected {
-    border: 1px solid #000;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  }
-
-  .selected-drone-card {
-    max-width: 200px;
-    max-height: 200px;            
-  }
-
-  .img {
-    width: 100%;
-    height: 100%;
   }
 </style>
 

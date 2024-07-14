@@ -51,7 +51,7 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <div>
+  <div class="weather-app">
     <header class="header">
       <h1>Drone - Weather</h1>
     </header>
@@ -88,17 +88,25 @@ onBeforeMount(async () => {
 </template>
 
 <style scoped>
+  .weather-app {
+    display: flex;
+    flex-direction: column;
+    height: 100%;  
+    background-color: #f1f1f1;  
+  }
+
   .header {
-    background-color: #333;
+    background-color: #3498db;
     color: white;
     padding: 1rem;
     text-align: center;
   }
 
-  .container {
+  .container {    
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-direction: column;    
+    flex-direction: column;
+    max-width: 500px;        
   }
 </style>
