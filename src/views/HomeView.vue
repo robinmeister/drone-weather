@@ -2,11 +2,6 @@
 import { onBeforeMount } from "vue";
 import { MainData } from "@/assets/appdata/maindata";
 
-onBeforeMount(async () => {
-  const maindata = new MainData()
-  await maindata.init("Velbert");
-  console.log(maindata);
-});
   import WeatherInfo from "@/components/WeatherInfo.vue";
   import Drones from "@/components/Drones.vue";
   import WeekDaySelection from "@/components/WeekDaySelection.vue";
@@ -46,6 +41,13 @@ onBeforeMount(async () => {
     day.value = value;
     fetchData(value);
   };
+
+  onBeforeMount(async () => {
+    const maindata = new MainData()
+    await maindata.init("Velbert");
+    console.log(maindata);
+  });
+
   console.log("Error:", error);
   console.log("Loading:", loading);
 </script>
