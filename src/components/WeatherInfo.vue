@@ -8,7 +8,7 @@ import {type Ref, ref, watch} from "vue";
   const props = defineProps<Props>();
 
   const formatDate = (date: string) => {
-    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const options: Intl.DateTimeFormatOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     return new Date(date).toLocaleDateString('en-US', options);
   }
 

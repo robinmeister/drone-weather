@@ -20,7 +20,7 @@
   
   interface Props {
     wind: {
-      type: Wind,
+      type: any,
       required: true
     }
   }  
@@ -66,7 +66,7 @@
       }
     ]     
 
-  const filterRecDrones = (wind: number) => {
+  const filterRecDrones = (wind: any) => {
     console.log('Filtering drones with wind:', wind)  
     return drones.filter(drone => drone.maxWindResistance >= wind.max)
   }

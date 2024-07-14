@@ -46,7 +46,7 @@ watchOnce(emblaMainApi, (emblaMainApi) => {
     <div
       v-if="drones.length === 0"      
     >
-      <Alert variant="info">
+      <Alert variant="default">
         <AlertCircle class="w-4 h-4" />
         <AlertTitle>No drones recommended</AlertTitle>
         <AlertDescription>

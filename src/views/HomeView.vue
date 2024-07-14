@@ -16,7 +16,7 @@
     speed_180: number
   }
   
-  let currentWind: Ref<Wind> = ref({
+  let currentWind: Ref<any> = ref({
     date: new Date(),
     max: 0,
     speed_10: 0,
@@ -73,12 +73,10 @@
     const dateFrom: string = currentTime.toISOString().split("T")[0];
     const dateTo: string = currentTime.toISOString().split("T")[0];
 
-    currentWind.value.date = dateFrom;
-
     const weatherData = new MainData();
     await weatherData.init(coordinates.value, dateFrom, dateTo);
     const max = weatherData.location?.weatherdata?.maxWindspeed;    
-    currentWind.value = {...weatherData.location?.weatherdata?.windspeed[num], max: max};
+    currentWind.value = {...weatherData.location?.weatherdata?.windspeed[num], max: max as number};
   }  
 
   console.log("Error:", error.value);

@@ -2,9 +2,7 @@
 .vscode/
 .idea/
 
-# Ignore build output
 build/
-dist/
 out/
 
 # Ignore dependency directories
