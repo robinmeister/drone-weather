@@ -25,6 +25,10 @@
     speed_180: 0
   });
 
+
+  let loadData: Ref<Boolean> = ref(false);
+  let inputData: Ref<string> = ref('');
+
   const loading : Ref<boolean> = ref<boolean>(false);
   const error : Ref<boolean> = ref<boolean>(false);
 
@@ -39,12 +43,14 @@
     console.log("Fetching data for coordinates:", coordinates.value, "and day:", day);
     await fetchWeatherData(index.value);
     loading.value = false;
+    loadData.value = true;
   };
 
   const setCoordinates = async (value: { lat: number; lon: number }) => {
     console.log("Setting coordinates:", value);
     coordinates.value = value;
     await fetchWeatherData(0);
+    loadData.value = true;
   };
 
   const setLoading = (value: boolean) => {
@@ -55,11 +61,16 @@
     error.value = value;
   };
 
-  const setDay = (value: any) => {
+  const setDay = async (value: any) => {
     day.value = value.day;
     index.value = (value.index + 1);
-    fetchData(value);
+    await fetchData(value);
   };
+
+  async function handleEnter(value: string) {
+      inputData.value = value;
+      await fetchData(today);
+  }
 
   //momentan nur für windspeed_10 → muss noch auf 80, 120 und 180 erweitert werden
   async function fetchWeatherData(indexDay: number) {
@@ -73,8 +84,11 @@
     const dateFrom: string = currentTime.toISOString().split("T")[0];
     const dateTo: string = currentTime.toISOString().split("T")[0];
 
+    console.log("Date from " + dateFrom);
+    console.log("Day to " + dateTo);
+
     const weatherData = new MainData();
-    await weatherData.init(coordinates.value, dateFrom, dateTo);
+    await weatherData.init(coordinates.value, inputData.value, dateFrom, dateTo);
     const max = weatherData.location?.weatherdata?.maxWindspeed;
     currentWind.value = {...weatherData.location?.weatherdata?.windspeed[num], max: max as number};
   }
@@ -91,7 +105,8 @@
     <main class="container mx-auto p-4">
       <LocationInput 
         v-model="coordinates" 
-        @search="fetchData" 
+        @search="fetchData"
+        @key:enter="handleEnter"
         @update:coordinates="setCoordinates"
         @update:error="setError"
         @update:loading="setLoading"
@@ -106,7 +121,7 @@
         </div>
       </div>
       <div v-if="error && !loading">Error fetching data</div>
-      <div v-if="!loading && !error && coordinates">
+      <div v-if="!loading && !error && loadData">
         <Drones :wind="currentWind" />
         <WeatherInfo :wind="currentWind" />
         <WeekDaySelection

@@ -3,7 +3,6 @@ import { LocationData } from "@/assets/location/LocationData";
 import { getLocationData } from "@/assets/location/LocationHelper";
 
 export class MainData {
-    //dronearray: Drone[] | undefined = undefined;
     location: LocationData | undefined = undefined;
 
     date_today: Date = new Date();
