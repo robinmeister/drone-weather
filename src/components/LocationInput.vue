@@ -9,35 +9,6 @@ const emit = defineEmits(['update:loading', 'update:error', 'update:coordinates'
 
 const location = ref('')
 const correctLocation : Ref<boolean | undefined> = ref(undefined)
-const coordinates = ref({ lat: 0, lon: 0 })
-
-const searchLocation = async (event: MouseEvent) => {
-  event.preventDefault()
-  if (!location.value) return
-  console.log('Searching for location:', location.value)
-  emit('update:loading', true)
-  const geocoding_api_key = import.meta.env.VITE_GEOCODING_API_KEY
-  const address = location.value
-  const url = `https://geocode.maps.co/search?q=${encodeURIComponent(address)}&api_key=${geocoding_api_key}`
-  try {
-    const response = await fetch(url)
-    const data = await response.json()
-    if(data && data.length > 0) {
-      const { lat, lon } = data[0]
-      console.log('Location found:', lat, lon)
-      correctLocation.value = true
-      coordinates.value = { lat, lon }
-      emit('update:coordinates', { lat, lon })
-      emit('update:loading', false)
-    } else {
-      console.error('Location not found:', location.value)
-      correctLocation.value = false
-    }
-  } catch (error) {
-    console.error('Error fetching location:', error)
-    emit('update:error', true)
-  }
-}
 
 </script>
 
@@ -56,7 +27,7 @@ const searchLocation = async (event: MouseEvent) => {
       <Input v-model="location" placeholder="Enter a location" @keydown.enter="emit('key:enter', location)" />
       <Button 
         class="search-button"
-        @click="searchLocation"        
+        @click="emit('key:enter', location)"        
       >
         <img src="../assets/icons/search.svg" alt="Search" />
       </Button>      
