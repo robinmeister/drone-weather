@@ -7,6 +7,7 @@
   import { ref, type Ref } from "vue";
   import { Skeleton } from "@/components/ui/skeleton";
 
+  /*
   export type Wind = {
     date: Date
     max: number
@@ -15,7 +16,8 @@
     speed_120: number
     speed_180: number
   }
-  
+  */
+
   let currentWind: Ref<any> = ref({
     date: new Date(),
     max: 0,
@@ -63,7 +65,7 @@
 
   const setDay = async (value: any) => {
     day.value = value.day;
-    index.value = (value.index + 1);
+    index.value = value.index;
     await fetchData(value);
   };
 
