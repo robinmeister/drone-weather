@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import {reactive, type Ref, ref, watch} from "vue";
-import type {Wind} from "@/views/HomeView.vue";
+import { reactive, watch } from "vue";
 
   type Props = {
     wind: any
@@ -8,21 +7,21 @@ import type {Wind} from "@/views/HomeView.vue";
 
   const props = defineProps<Props>();
 
-  let currentwind: Wind = reactive(props.wind)
+let currentwind: any = reactive(props.wind)
 
-  const formatDate = (date: Date): string => {
-    const options: Intl.DateTimeFormatOptions = {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    };
-    return new Date(date).toLocaleDateString('en-US', options);
-  }
+const formatDate = (date: Date): string => {
+  const options: Intl.DateTimeFormatOptions = {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  };
+  return new Date(date).toLocaleDateString('en-US', options);
+}
 
-    watch(() => props.wind, (newwind) => {
-      currentwind = newwind;
-    });
+watch(() => props.wind, (newwind) => {
+  currentwind = newwind;
+});
 </script>
 
 <template>
@@ -66,12 +65,12 @@ import type {Wind} from "@/views/HomeView.vue";
   .weather-info {
     margin-top: 1rem;
     display: flex;
-    justify-content: center;
+    justify-content: center;    
   }
 
   .weather-info-card {
     display: flex;
-    width: 90%;
+    width: 90%;    
     gap: 1rem;
     padding: 1rem;
     border-radius: 0.5rem;
@@ -88,19 +87,6 @@ import type {Wind} from "@/views/HomeView.vue";
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-  }
-
-  .wind {
-    font-size: 1.5rem;
-    font-weight: bold;
-  }
-
-  .temperature {
-    font-size: 1rem;
-  }
-
-  .description {
-    font-size: 0.75rem;
   }
 
   .wind-table {
@@ -129,6 +115,6 @@ import type {Wind} from "@/views/HomeView.vue";
 
   .wind-table-data:last-child {
     border-right: none;
-  }
+  }  
 
 </style>

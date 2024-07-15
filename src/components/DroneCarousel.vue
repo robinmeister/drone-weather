@@ -47,7 +47,7 @@ watchOnce(emblaMainApi, (emblaMainApi) => {
       v-if="drones.length === 0"      
     >
       <Alert variant="default">
-        <!--<AlertCircle class="w-4 h-4" />-->
+        <AlertCircle class="w-4 h-4" />
         <AlertTitle>No drones recommended</AlertTitle>
         <AlertDescription>
           There are no drones recommended for the current weather conditions.

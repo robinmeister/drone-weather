@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import {reactive, ref, type Ref, watch} from 'vue';
+  import {
+    Card,    
+  } from '@/components/ui/card'
+  import { ref, type Ref } from 'vue';
   import DroneCarousel from '@/components/DroneCarousel.vue'
   import dji_fpv from '@/assets/images/dji_fpv.jpg'
   import dji_mini_4_pro from '@/assets/images/dji_mini_4_pro.png'
@@ -7,7 +10,6 @@ import {reactive, ref, type Ref, watch} from 'vue';
   import dji_avata from '@/assets/images/dji_avata.jpg'
   import dji_mavic_2_pro from '@/assets/images/dji_mavic_2_pro.jpg'
   import dji_mavic_3 from '@/assets/images/dji_mavic_3.jpg'
-  import type { Wind } from "@/views/HomeView.vue";
 
   type Drone = {
     id: number
@@ -15,14 +17,15 @@ import {reactive, ref, type Ref, watch} from 'vue';
     maxWindResistance: number
     image: string
   }
-
-  type Props = {
-    wind: any
-  }
+  
+  interface Props {
+    wind: {
+      type: any,
+      required: true
+    }
+  }  
 
   const props = defineProps<Props>();
-
-  let currentwind: Wind = reactive(props.wind);
 
   const drones : Drone[] = [
       {
@@ -63,12 +66,12 @@ import {reactive, ref, type Ref, watch} from 'vue';
       }
     ]     
 
-  const filterRecDrones = (wind: Wind) => {
+  const filterRecDrones = (wind: any) => {
     console.log('Filtering drones with wind:', wind)  
-    return drones.filter(drone => drone.maxWindResistance >= currentwind.max)
+    return drones.filter(drone => drone.maxWindResistance >= wind.max)
   }
 
-  const recommended_drones = ref(filterRecDrones(currentwind))
+  const recommended_drones = ref(filterRecDrones(props.wind))
   
   const selectedDrone : Ref<number> = ref(0)  
 
@@ -76,12 +79,6 @@ import {reactive, ref, type Ref, watch} from 'vue';
     console.log('Selected drone:', index)
     selectedDrone.value = index
   }
-
-  watch(() => props.wind, (newvalue, oldvalue) => {
-      currentwind = newvalue;
-  })
-
-  console.log(props.wind);
 
 </script>
 

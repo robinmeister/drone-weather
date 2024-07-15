@@ -4,7 +4,7 @@
   import Drones from "@/components/Drones.vue";
   import WeekDaySelection from "@/components/WeekDaySelection.vue";
   import LocationInput from "@/components/LocationInput.vue";
-  import {onMounted, reactive, ref, type Ref} from "vue";
+  import { ref, type Ref } from "vue";
   import { Skeleton } from "@/components/ui/skeleton";
 
   export type Wind = {
@@ -15,8 +15,8 @@
     speed_120: number
     speed_180: number
   }
-
-  let currentWind: Wind = reactive<Wind>({
+  
+  let currentWind: Ref<any> = ref({
     date: new Date(),
     max: 0,
     speed_10: 0,
@@ -25,13 +25,9 @@
     speed_180: 0
   });
 
-
   const loading : Ref<boolean> = ref<boolean>(false);
   const error : Ref<boolean> = ref<boolean>(false);
 
-  let loadData: Ref<Boolean> = ref(false);
-
-  let inputdata: Ref<string> = ref("");
   const coordinates : Ref<{ lat: number; lon: number } | undefined> = ref(undefined);
   const today : string = new Date().toLocaleDateString("en-US", { weekday: "short" });   
   const day : Ref<string> = ref(today);
@@ -43,13 +39,12 @@
     console.log("Fetching data for coordinates:", coordinates.value, "and day:", day);
     await fetchWeatherData(index.value);
     loading.value = false;
-    loadData.value = true;
   };
 
   const setCoordinates = async (value: { lat: number; lon: number }) => {
     console.log("Setting coordinates:", value);
     coordinates.value = value;
-    await fetchData(today);
+    await fetchWeatherData(0);
   };
 
   const setLoading = (value: boolean) => {
@@ -62,13 +57,7 @@
 
   const setDay = (value: any) => {
     day.value = value.day;
-
-    if (day.value !== today) {
-      index.value = value.index + 1;
-    } else {
-      index.value = 0;
-    }
-
+    index.value = (value.index + 1);
     fetchData(value);
   };
 
@@ -84,23 +73,11 @@
     const dateFrom: string = currentTime.toISOString().split("T")[0];
     const dateTo: string = currentTime.toISOString().split("T")[0];
 
-    currentWind.date = new Date(dateFrom);
-
     const weatherData = new MainData();
-    await weatherData.init(coordinates.value, inputdata.value, dateFrom, dateTo);
-    console.log("Number:", num);
-    console.log("Weather data:", weatherData.location?.weatherdata);
-
-    currentWind = weatherData.location?.weatherdata?.windspeed[num]!!;
-    currentWind.max = weatherData.location?.weatherdata?.maxWindspeed!!;
+    await weatherData.init(coordinates.value, dateFrom, dateTo);
+    const max = weatherData.location?.weatherdata?.maxWindspeed;
+    currentWind.value = {...weatherData.location?.weatherdata?.windspeed[num], max: max as number};
   }
-
-  async function handleEnter(value: string) {
-    inputdata.value = value;
-    await fetchData(today);
-  }
-
-  console.log("Current wind:", currentWind);
 
   console.log("Error:", error.value);
   console.log("Loading:", loading.value);
@@ -113,9 +90,8 @@
     </header> -->
     <main class="container mx-auto p-4">
       <LocationInput 
-        v-model="coordinates"
-        @search="fetchData"
-        @key:enter="handleEnter"
+        v-model="coordinates" 
+        @search="fetchData" 
         @update:coordinates="setCoordinates"
         @update:error="setError"
         @update:loading="setLoading"
@@ -130,7 +106,7 @@
         </div>
       </div>
       <div v-if="error && !loading">Error fetching data</div>
-      <div v-if="!loading && !error && loadData">
+      <div v-if="!loading && !error && coordinates">
         <Drones :wind="currentWind" />
         <WeatherInfo :wind="currentWind" />
         <WeekDaySelection

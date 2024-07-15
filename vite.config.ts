@@ -9,6 +9,7 @@ import autoprefixer from 'autoprefixer'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: "/drone-weather/",
   css: {
     postcss: {
       plugins: [tailwind(), autoprefixer()],
