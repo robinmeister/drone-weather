@@ -37,3 +37,7 @@ bun build
 ```sh
 bun lint
 ```
+
+## API
+
+Weather API [Open Meteo](https://open-meteo.com/) 
